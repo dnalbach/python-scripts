@@ -1,7 +1,6 @@
+import player
 import fruit
 
 class State:
-    player = None
-    game_characters = { "wall": "@", "player": "*" }
-    coordinates = {}
+    player = player.Player()
     fruit = fruit.Fruit()

@@ -1,6 +1,7 @@
 class Player:
     x = 1
     y = 1
+    icon = "*"
 
     def update_position(self, direction, addition):
         if addition :

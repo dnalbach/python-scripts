@@ -1,42 +1,46 @@
-from os import system
 import keyboard # must 'pip install keyboard' before using
 import time
-import random
-import arena
-import player
-import screen
 import state
+import curses
 
 last_frame_time = 0
 new_time = 0
-
-def update_frame(game_state, screen):
-    keyname = "x" + str(game_state.player.x) + "y" + str(game_state.player.y)
-    key_value = game_state.coordinates.get(keyname)
-    key_value["player"] = True
-    game_state.coordinates[keyname] = key_value
-       
-    arena.build(game_state)
-    screen.draw(game_state)
+endless_loop = True
 
 # Initialize game resources
-screen = screen.Screen()
-player = player.Player()
 game_state = state.State()
-game_state.player = player
 
 # Begin game
-system('clear')
-arena.build(game_state)
-screen.draw(game_state)
+curses.initscr()
+curses.savetty()
+window = curses.newwin(22, 82, 0, 0)
+curses.noecho()
+curses.curs_set(0)
+window.border()
+
+def end_program():
+    global endless_loop
+    endless_loop = False
+    curses.endwin()
+    curses.resetty()
 
 keyboard.add_hotkey("d", lambda: game_state.player.update_position( "x", True),  timeout=0.01)
 keyboard.add_hotkey("a", lambda: game_state.player.update_position( "x", False), timeout=0.01)
 keyboard.add_hotkey("s", lambda: game_state.player.update_position( "y", True),  timeout=0.01)
 keyboard.add_hotkey("w", lambda: game_state.player.update_position( "y", False), timeout=0.01)
+keyboard.add_hotkey("esc", end_program)
 
-while True: 
+while endless_loop: 
     new_time = time.time()
     if new_time - last_frame_time > .02 : 
-        update_frame(game_state, screen)
+        window.clear()
+        # Draw the fruit
+        window.move(game_state.fruit.y, game_state.fruit.x)
+        window.addstr(game_state.fruit.icon)
+        # Draw the player
+        window.move(game_state.player.y, game_state.player.x)
+        window.addstr(game_state.player.icon)
+
         last_frame_time = new_time
+        window.border()
+        window.refresh()
