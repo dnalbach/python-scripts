@@ -45,7 +45,7 @@ class MathProblem:
         self.text = "     %s: \n\n     %s %s %s = " %(self.problem_type_list[problem_type], self.first_number, sign, self.second_number)
 
 system('clear')
-user_name = raw_input("\n     What is your first name?  ")
+user_name = raw_input("\n     What is your first name?  ").lower()
 system('clear')
 
 while time_remaining :
