@@ -2,13 +2,9 @@
 import random
 import time
 from os import system
-import mixpanel
 from mixpanel import Mixpanel
 
 mp = Mixpanel("f889f303554b41d71d74f68746438fe0")
-
-
-
 
 # Note that all output string lines are indented 5 spaces on purpose for screen output padding
 
@@ -16,7 +12,6 @@ score = 0
 time_limit = 60
 start_time = time.time()
 time_remaining = True
-
 
 def get_sign(argument): 
     switcher = { 
@@ -48,7 +43,6 @@ class MathProblem:
 
         sign = get_sign(self.problem_type_list[problem_type]) 
         self.text = "     %s: \n\n     %s %s %s = " %(self.problem_type_list[problem_type], self.first_number, sign, self.second_number)
-
 
 system('clear')
 user_name = raw_input("\n     What is your first name?  ")
@@ -82,8 +76,7 @@ while time_remaining :
         time.sleep(1)
         system('clear')
     
-    # You can also include properties to describe
-    # the circumstances of the event
+    # Track who is playing and their answers for review of patterns
     mp.track(user_name, 'Answer', {
         'problem': problem.text,
         'answer': problem.answer,
@@ -95,6 +88,10 @@ while time_remaining :
         time_remaining = False
         system('clear')
         print "\n\n     FINAL SCORE: ", score, "\n\n"
-
-
+        
+        # Track user's final score
+        mp.track(user_name, 'FinalScore', {
+            'score': score,
+            'time_limit': time_limit,
+        })
     
